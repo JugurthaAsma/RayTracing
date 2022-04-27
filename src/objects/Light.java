@@ -15,7 +15,6 @@ import tools.Vec3d;
 public class Light {
     
     public Vec3d position;
-    public static Color AMBIENT_LIGHT = Color.lightgray;
     public Color diffuse, specular;
     
     public Light(Vec3d position, Color diffuse, Color specular) {

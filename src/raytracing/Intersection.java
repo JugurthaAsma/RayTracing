@@ -30,7 +30,7 @@ public abstract class Intersection {
         this.refraction = refraction;
     }
     
-    public abstract double getIntersection(Vec3d P,Vec3d v);    
+    public abstract double getIntersection(Vec3d P, Vec3d v);    
 
     public abstract Vec3d getNormal(Vec3d I);
 

@@ -19,7 +19,7 @@ public class Sphere extends Intersection {
     public final double radius;
     
     public Sphere(Vec3d center, double radius, Color color) {
-        this(center, radius, color, Color.white, 10.0D, 0.02D, 0.5D, 1D);
+        this(center, radius, color, Color.WHITE, 10.0D, 0.02D, 0.5D, 1D);
         
     }
 
@@ -53,10 +53,10 @@ public class Sphere extends Intersection {
          * On calcule le point I correspondant à λI.
          * Il faut calculer la normale en I, Cette normale est CI / ||CI|| (rayon correspondant à I, qu’on normalise pour trouver un vecteur normal).
          */
-        
+        /*
         Vec3d CP = P.sub(center);
         double a = v.dotProduct(v);
-        double b = v.mul(2.0D).dotProduct(CP);
+        double b = v.scale(2.0D).dotProduct(CP);
         double c = CP.dotProduct(CP) - radius * radius;
         double delta = b * b - 4.0D * a * c;
 
@@ -68,8 +68,8 @@ public class Sphere extends Intersection {
         }
         
         if (delta > 0.0D) {
-            double lambda1 = (-b - Math.sqrt(delta)) / (2.0D * a); // (-b - sqrt(delta)) / (2a)
-            double lambda2 = (-b + Math.sqrt(delta)) / (2.0D * a); // (-b + sqrt(delta)) / (2a)
+            double lambda1 = (-b - Math.sqrt(delta)) / (2.0D * a);
+            double lambda2 = (-b + Math.sqrt(delta)) / (2.0D * a);
 
             if (lambda1 < 0.0001D && 0.001D < lambda2) {
                 return lambda2;
@@ -79,6 +79,34 @@ public class Sphere extends Intersection {
         }
         
         return -1D;
+        */
+        
+        
+        Vec3d L = P.sub(center);
+
+        double
+                a = (v.dotProduct(v)),
+                b = (v.scale(2.0D).dotProduct(L)),
+                c = (L.dotProduct(L) - (radius * radius));
+
+        double delta = (b * b) - (4.0D * a * c);
+
+        // Only one intersection
+        if (delta == 0.0D) {
+            double t = (-b / (2.0D * a));
+            if (t > 0.0D) return t;
+        }
+
+        // Two intersections
+        else if (delta > 0.0D) {
+            double t1 = (-b - Math.sqrt(delta)) / (2.0D * a);
+            double t2 = (-b + Math.sqrt(delta)) / (2.0D * a);
+            if (t1 < 0.0001D && t2 > 0.0001D) return t2;
+            else if (t1 > 0.0001D && t1 < t2) return t1;
+        }
+
+        return -1.0D;
+        
         
     }
 

@@ -69,61 +69,21 @@ public class JavaTga
     
     private static void initScene(Scene scene) {
         
-        scene.objects.add(new Plane(new Vec3d(0.0D, 0.0D, -1.0D), 6.0D, Color.red, Color.lightgray, 20.0D, 0.1D));
-        scene.objects.add(new Plane(new Vec3d(0.0D, 0.0D, 1.0D), 6.0D, Color.green, Color.lightgray, 20.0D, 0.1D));
-        scene.objects.add(new Plane(new Vec3d(1.0D, 0.0D, 0.0D), 3.0D, Color.blue, Color.lightgray, 20.0D, 0.1D));
-        //scene.objects.add(new Plane(new Vec3d(-1.0D, 0.0D, 0.0D), 3.0D, Color.YELLOW, Color.lightgray, 20.0D, 0.1D));
-        //scene.objects.add(new Plane(new Vec3d(0.0D, 1.0D, 0.0D), 1.5D, Color.CYAN, Color.lightgray, 20.0D, 0.1D));
-        //scene.objects.add(new Plane(new Vec3d(0.0D, -1.0D, 0.0D), 1.5D, Color.MAGENTA, Color.lightgray, 20.0D, 0.1D));
+        //scene.objects.add(new Plane(new Vec3d(-1D, 0D, 0D), 400D, Color.RED, Color.LIGHTGREY, 20D, 0.1D)); // droite
+        scene.objects.add(new Plane(new Vec3d(0D, 0D, 1D), 250D, Color.GREEN, Color.LIGHTGREY, 100.0D, 0.0D, 0.0D, 0.0D)); // front
+        //scene.objects.add(new Plane(new Vec3d(1.0D, 0.0D, 0.0D), 400D, Color.BLUE, Color.LIGHTGREY, 20.0D, 0.1D)); // gauche
+        //scene.objects.add(new Plane(new Vec3d(0.0D, 1.0D, 0.0D), 400D, Color.WHITE, Color.LIGHTGREY, 20.0D, 0.1D)); // bottom
+        //scene.objects.add(new Plane(new Vec3d(0.0D, -1.0D, 0.0D), 500D, Color.LIGHTGREY, Color.LIGHTGREY, 20.0D, 0.1D)); // top
 
         scene.objects.add(
-                new Sphere(new Vec3d(0.0D, 0.0D, -4.0D), 1D, Color.blue, Color.white, 10.0D, 0.0D, 0.75D, 1.0D));
+                new Sphere(new Vec3d(0.0D, 0.0D, -125.0D), 75D, Color.BLUE, Color.WHITE, 10.0D, 0.0D, 0.75D, 1.0D));
+/*        scene.objects.add(
+                new Sphere(new Vec3d(2.0D, 1.0D, -4.0D), 0.5D, Color.RED, Color.WHITE, 10.0D, 0.1D, 0.75D, 1.1D));
         scene.objects.add(
-                new Sphere(new Vec3d(2.0D, 1.0D, -4.0D), 0.5D, Color.red, Color.white, 10.0D, 0.1D, 0.75D, 1.1D));
-        scene.objects.add(
-                new Sphere(new Vec3d(-2.0D, -1.0D, -4.0D), 0.5D, Color.blue, Color.white, 10.0D, 0.35D, 0.15D, 1.0D));
-
-        scene.lights.add(new Light(new Vec3d(1D, 1D, 0D), Color.white, Color.lightgray));
-
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        /*
-        // origin of ray
-        Vec3d p = new Vec3d(0, 0, 0);
-        
-        float dist = 20;
-        Vec3d leftPlaneNormal = new Vec3d(-1, 0, 0);
-        Vec3d rightPlaneNormal = new Vec3d(1, 0, 0);
-        Vec3d upperPlaneNormal = new Vec3d(0, -1, 0);
-        Vec3d lowerPlaneNormal = new Vec3d(0, 1, 0);
-        Vec3d frontPlaneNormal = new Vec3d(0, 0, 1);
-        
-        Plane leftPlane = new Plane(leftPlaneNormal, dist, Color.blue);
-        Plane rightPlane = new Plane(rightPlaneNormal, dist, Color.red);
-        Plane upperPlane = new Plane(upperPlaneNormal, dist, Color.green);
-        Plane lowerPlane = new Plane(lowerPlaneNormal, dist, Color.lightgray);
-        Plane frontPlane = new Plane(frontPlaneNormal, 0.04F, Color.white);
-        
-        Sphere sphere = new Sphere(new Vec3d(0, 0, 0), 0.1, Color.lightgray);
-        
-        scene.objects.add(leftPlane);
-        scene.objects.add(rightPlane);
-        scene.objects.add(upperPlane);
-        scene.objects.add(lowerPlane);
-        scene.objects.add(frontPlane);
-        scene.objects.add(sphere);
-
-        scene.lights.add(new Light(new Vec3d(1D, 1D, 0D), Color.white, Color.lightgray));
-        */
+                new Sphere(new Vec3d(-2.0D, -1.0D, -4.0D), 0.5D, Color.BLUE, Color.WHITE, 10.0D, 0.35D, 0.15D, 1.0D));
+*/
+        scene.lights.add(new Light(new Vec3d(1D, 1D, 0D), Color.WHITE, Color.LIGHTGREY));
+  
     }
     
     
@@ -132,87 +92,32 @@ public class JavaTga
      */
     public static void main(String[] args) {
         int w=1024;
-        int h=768;
+        int h=726;
+        int minResolution = Math.min(w, h);
         byte buffer[]=new byte[3*w*h];
         
         // origin of ray
-        Vec3d p = new Vec3d(0, 0, 0);
-        
-        float dist = 20;
-        Vec3d leftPlaneNormal = new Vec3d(1, 0, 0);
-        Vec3d rightPlaneNormal = new Vec3d(-1, 0, 0);
-        Vec3d upperPlaneNormal = new Vec3d(0, 1, 0);
-        Vec3d lowerPlaneNormal = new Vec3d(0, -1, 0);
-        Vec3d frontPlaneNormal = new Vec3d(0, 0, -1);
-        
-        Plane leftPlane = new Plane(leftPlaneNormal, dist, Color.blue);
-        Plane rightPlane = new Plane(rightPlaneNormal, dist, Color.red);
-        Plane upperPlane = new Plane(upperPlaneNormal, dist, Color.green);
-        Plane lowerPlane = new Plane(lowerPlaneNormal, dist, Color.lightgray);
-        Plane frontPlane = new Plane(frontPlaneNormal, -0.04F, Color.white);
-        
-        Sphere sphere = new Sphere(new Vec3d(0, 0, 0), 0.1, Color.lightgray);
-
-        Intersection[] objects = new Intersection[] {
-            leftPlane,
-            rightPlane,
-            upperPlane,
-            lowerPlane,
-            frontPlane,
-            //sphere
-        };
-        
-        
+        Vec3d p = new Vec3d();
         
         Scene scene = new Scene();
         initScene(scene);
-        
-        
         
         for(int row = 0; row < h; row++){ // for each row of the image
             for(int col = 0; col < w; col++){ // for each column of the image
                 
                 int index = 3*((row*w)+col); // compute index of color for pixel (x,y) in the buffer
                 
-                // Ensure that the pixel is black
-                buffer[index]=0; // blue : take care, blue is the first component !!!
-                buffer[index+1]=0; // green
-                buffer[index+2]=0; // red (red is the last component !!!)
-                
-                
-                int nearestObjectIndex = 0;
-                double minLambda = Double.MAX_VALUE;
-                
-                // each pixel is the direction of the ray
-                float x = (col-w/2)*2;
-                float y = (row-h/2)*2;
-                float z = -1;
+                double x = (col-w/2)/minResolution;
+                double y = (row-h/2)/minResolution;
+                double z = -0.25D;
                 Vec3d v = new Vec3d(x, y, z);
-                Ray ray = new Ray(p, v);
+               
+                Color color = scene.findColor(new Vec3d(), v, 3);
                 
-                
-                
-                for (int objectIndex = 0; objectIndex < objects.length; ++objectIndex) {
-                    double lambda = objects[objectIndex].getIntersection(ray.p, ray.v);
-                    if (lambda > 0 && lambda < minLambda) {
-                        minLambda = lambda;
-                        nearestObjectIndex = objectIndex;
-                    }
-                }
-                
-                // Depending on the x position, select a color... 
-                buffer[index]=(byte)objects[nearestObjectIndex].color.b;
-                buffer[index+1]=(byte)objects[nearestObjectIndex].color.g;
-                buffer[index+2]=(byte)objects[nearestObjectIndex].color.r;
-                
-                
-                
-                //Color color = scene.findColor(p, v, 1);
-                /*
                 // Depending on the x position, select a color... 
                 buffer[index]=(byte)color.b;
                 buffer[index+1]=(byte)color.g;
-                buffer[index+2]=(byte)color.r;*/
+                buffer[index+2]=(byte)color.r;
             }
         }
         try {

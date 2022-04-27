@@ -20,7 +20,6 @@ public class Plane extends Intersection {
     Vec3d normal;
     double dist;
     
-    
     /**
      * Constructor.
      * 
@@ -34,51 +33,10 @@ public class Plane extends Intersection {
      * @param transmissionCoeff the transmission coefficient of the plane
      * @param refractionIndex   the refraction index of the plane
      */
-    public Plane(Vec3d normal, double distance, Color color, Color specularColor, double shininess,
-            double reflectionCoeff, double transmissionCoeff, double refractionIndex) {
+    public Plane(Vec3d normal, double distance, Color color, Color specularColor, double shininess, double reflectionCoeff, double transmissionCoeff, double refractionIndex) {
         super(color, specularColor, shininess, reflectionCoeff, transmissionCoeff, refractionIndex);
         this.normal = normal;
         this.dist = distance;
-    }
-
-    /**
-     * Constructor.
-     * 
-     * @param normal          the normal of the plane
-     * @param distance        the distance from the origin of the plane to the plane
-     * @param color           the color of the plane
-     * @param specularColor   the specular color of the plane
-     * @param shininess       the shininess of the plane
-     * @param reflectionCoeff the reflection coefficient of the plane
-     */
-    public Plane(Vec3d normal, double distance, Color color, Color specularColor, double shininess,
-            double reflectionCoeff) {
-        this(normal, distance, color, specularColor, shininess, reflectionCoeff, 0.0D, 1.0D);
-    }
-
-    /**
-     * Constructor.
-     * 
-     * @param normal        the normal of the plane
-     * @param distance      the distance from the origin of the plane to the plane
-     * @param color         the color of the plane
-     * @param specularColor the specular color of the plane
-     * @param shininess     the shininess of the plane
-     */
-    public Plane(Vec3d normal, double distance, Color color, Color specularColor, double shininess) {
-        this(normal, distance, color, specularColor, shininess, 0.0D, 0.0D, 1.0D);
-    }
-
-    /**
-     * Constructor.
-     * 
-     * @param normal        the normal of the plane
-     * @param distance      the distance from the origin of the plane to the plane
-     * @param color         the color of the plane
-     * @param specularColor the specular color of the plane
-     */
-    public Plane(Vec3d normal, double distance, Color color) {
-        this(normal, distance, color, Color.white, 10.0D, 0.0D, 0.0D, 1.0D);
     }
 
     @Override
@@ -94,17 +52,21 @@ public class Plane extends Intersection {
          *  Puis on en déduit l’intersection I=M(λI) à partir de λI et de l’équation du rayon.
          *  La normale de l’intersection est n (car tout point du plan a cette normale)
          */
-        
+        /*
         double n_v = normal.dotProduct(v);
 
         if (n_v != 0.0D) {
             double lambdaI = (-(normal.dotProduct(p)) - dist) / n_v;
 
-            if (lambdaI > 0D)
+            if (lambdaI > 0.0001D)
                 return lambdaI;
         }
 
-        return -1D;
+        return -1.0D;
+*/
+        
+        final double t = (normal.dotProduct(v) != 0.0D) ? (-(normal.dotProduct(p)) - dist) / (normal.dotProduct(v)) : -1.0D;
+        return (t > 0.0001D) ? t : -1.0D;
     
     }
 
