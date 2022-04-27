@@ -14,12 +14,12 @@ import tools.Vec3d;
  */
 public abstract class Intersection {
     
-    public Color color;
-    public Color specularColor;
-    public double shininess;
-    public double reflection;
-    public double transmission;
-    public double refraction;
+    public final Color color;
+    public final Color specularColor;
+    public final double shininess;
+    public final double reflection;
+    public final double transmission;
+    public final double refraction;
     
     public Intersection(Color color, Color specularColor, double shininess, double reflection, double transmission, double refraction) {
         this.color = color;

@@ -20,9 +20,7 @@ public class Sphere extends Intersection {
     
     public Sphere(Vec3d center, double radius, Color color) {
         this(center, radius, color, Color.WHITE, 10.0D, 0.02D, 0.5D, 1D);
-        
     }
-
     
     public Sphere(Vec3d center, double radius, Color color, Color specularColor, double shininess, double reflection, double transmission, double refraction) {
         super(color, specularColor, shininess, reflection, transmission, refraction);
@@ -33,7 +31,7 @@ public class Sphere extends Intersection {
     @Override
     public double getIntersection(Vec3d P, Vec3d v) {
         
-        /**
+        /*
          * L’équation peut être simplifiée en reconnaissant les produits scalaires, ce qui donne :
          * ||u||².λI+2u.CP λI+||CP||²−r²=0
          * équation du 2e degré de type :
@@ -53,7 +51,7 @@ public class Sphere extends Intersection {
          * On calcule le point I correspondant à λI.
          * Il faut calculer la normale en I, Cette normale est CI / ||CI|| (rayon correspondant à I, qu’on normalise pour trouver un vecteur normal).
          */
-        /*
+
         Vec3d CP = P.sub(center);
         double a = v.dotProduct(v);
         double b = v.scale(2.0D).dotProduct(CP);
@@ -78,43 +76,12 @@ public class Sphere extends Intersection {
             }
         }
         
-        return -1D;
-        */
-        
-        
-        Vec3d L = P.sub(center);
-
-        double
-                a = (v.dotProduct(v)),
-                b = (v.scale(2.0D).dotProduct(L)),
-                c = (L.dotProduct(L) - (radius * radius));
-
-        double delta = (b * b) - (4.0D * a * c);
-
-        // Only one intersection
-        if (delta == 0.0D) {
-            double t = (-b / (2.0D * a));
-            if (t > 0.0D) return t;
-        }
-
-        // Two intersections
-        else if (delta > 0.0D) {
-            double t1 = (-b - Math.sqrt(delta)) / (2.0D * a);
-            double t2 = (-b + Math.sqrt(delta)) / (2.0D * a);
-            if (t1 < 0.0001D && t2 > 0.0001D) return t2;
-            else if (t1 > 0.0001D && t1 < t2) return t1;
-        }
-
         return -1.0D;
-        
-        
     }
 
     @Override
     public Vec3d getNormal(Vec3d I) {
-        Vec3d CI = I.sub(center); // CI
-        CI.normalize();
-
-        return CI;}
+        return I.sub(center).normalize();
+    }
     
 }

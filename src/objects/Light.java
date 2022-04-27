@@ -14,8 +14,8 @@ import tools.Vec3d;
  */
 public class Light {
     
-    public Vec3d position;
-    public Color diffuse, specular;
+    public final Vec3d position;
+    public final Color diffuse, specular;
     
     public Light(Vec3d position, Color diffuse, Color specular) {
         this.position = position;

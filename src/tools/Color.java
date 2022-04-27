@@ -11,45 +11,46 @@ package tools;
  */
 public class Color {
     
-    static public final Color BLACK = new Color(0.F, 0.F, 0.F);
-    static public final Color GREY = new Color(50.F, 50.F, 50.F);
-    static public final Color LIGHTGREY = new Color(80.F, 80.F, 80.F);
-    static public final Color WHITE = new Color(255.F, 255.F, 255.F);
-    static public final Color BLUE = new Color(255.F, 0.F, 0.F);
-    static public final Color GREEN = new Color(0.F, 255.F, 0.F);
-    static public final Color RED = new Color(0.F, 0.F, 255.F);
+    static public final Color BLACK = new Color(0.0F, 0.0F, 0.0F);
+    static public final Color GREY = new Color(50.0F, 50.0F, 50.0F);
+    public static final Color DARK_GRAY = new Color(30F, 30F, 30F);
+    static public final Color LIGHTGREY = new Color(80.0F, 80.0F, 80.0F);
+    static public final Color WHITE = new Color(255.0F, 255.0F, 255.0F);
+    static public final Color BLUE = new Color(255.0F, 0.0F, 0.0F);
+    static public final Color GREEN = new Color(0.0F, 255.0F, 0.0F);
+    static public final Color RED = new Color(0.0F, 0.0F, 255.0F);
     
-    public final double b;
-    public final double g;
-    public final double r;
+    public final float b;
+    public final float g;
+    public final float r;
 
-    public Color(double b, double g, double r) {
-        this.b = b;
-        this.g = g;
-        this.r = r;
+    public Color(float b, float g, float r) {
+        this.b = (b < 0F) ? 0F : Math.min(b, 255F);
+        this.g = (g < 0F) ? 0F : Math.min(g, 255F);
+        this.r = (r < 0F) ? 0F : Math.min(r, 255F);
     }
 
     public Color add(Color color) {
         return new Color(
-            Math.min(this.r + color.r, 255D),
-            Math.min(this.g + color.g, 255D),
-            Math.min(this.b + color.b, 255D)
+            Math.min(this.b + color.b, 255.0F),
+            Math.min(this.g + color.g, 255.0F),
+            Math.min(this.r + color.r, 255.0F)
         );
     }
 
     public Color multiply(Color color) {
         return new Color(
-            (this.r * color.r) / 255D,
-            (this.g * color.g) / 255D,
-            (this.b * color.b) / 255D
+            (this.b * color.b) / 255.0F,
+            (this.g * color.g) / 255.0F,
+            (this.r * color.r) / 255.0F
         );
     }
 
     public Color scale(double scalar) {
         return new Color(
-            Math.min(this.r * scalar, 255D),
-            Math.min(this.g * scalar, 255D),
-            Math.min(this.b * scalar, 255D)
+            Math.min((float)Math.floor(this.b *  scalar), 255F),
+            Math.min((float)Math.floor(this.g * scalar), 255F),
+            Math.min((float)Math.floor(this.r *   scalar), 255F)
         );
     }
 
