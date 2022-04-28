@@ -8,12 +8,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import tools.Config;
 
 /**
  *
  * @author P. Meseure based on a Java Adaptation of a C code by B. Debouchages (M1, 2018-2019)
  */
-public class JavaTga {
+public class Raytracing {
 
     /**
      * 
@@ -63,26 +64,32 @@ public class JavaTga {
      * @param args no command line arguments
      */
     public static void main(String[] args) {
-
-        final int w = 1024;
-        final int h = 726;
-        final int minResolution = Math.min(w, h);
-
-        byte[] buffer = new byte[3 * w * h];
-
-        SceneBuilder sb = new SceneBuilder(2);
         
-        for (int row = 0; row < h; row++) { // for each row of the image
-            for (int col = 0; col < w; col++) { // for each column of the image
+        Config.setConfig(args);
+        
+        final int width = Config.WIDTH;
+        final int height = Config.HEIGHT;
+        
+        final int minResolution = Math.min(width, height);
+        byte[] buffer = new byte[3 * width * height];
+        Vec3d p = new Vec3d();
+
+        SceneBuilder sb = new SceneBuilder();
+        //sb.buildScene1();
+        sb.buildScene2();
+        //sb.buildScene3();
+
+        for (int row = 0; row < height; row++) { // for each row of the image
+            for (int col = 0; col < width; col++) { // for each column of the image
                 
-                int index = 3 * ((row * w) + col); // compute index of color for pixel (x,y) in the buffer
+                int index = 3 * ((row * width) + col); // compute index of color for pixel (x,y) in the buffer
                 
-                double x = (col - w / 2.0D) / minResolution;
-                double y = (row - h / 2.0D) / minResolution;
+                double x = (col - width / 2.0D) / minResolution;
+                double y = (row - height / 2.0D) / minResolution;
                 double z = -1.25D;
                 Vec3d v = new Vec3d(x, y, z);
                
-                Color color = sb.scene.findColor(new Vec3d(), v, 3);
+                Color color = sb.scene.findColor(p, v, Config.DEPTH);
                 
                 // Depending on the x position, select a color... 
                 buffer[index] = (byte) color.b;
@@ -91,7 +98,11 @@ public class JavaTga {
             }
         }
 
-        try { saveTGA("imagetest.tga", buffer, w, h); }
-        catch(Exception e) { System.err.println("TGA file not created :" + e); }
+        try {
+            saveTGA("Scene_" + sb.scene.sceneNumber + "_" + width +"x" + height + ".tga", buffer, width, height);
+        }
+        catch(Exception e) {
+            System.err.println("TGA file not created :" + e);
+        }
     }
 }

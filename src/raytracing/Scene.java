@@ -6,11 +6,7 @@
 package raytracing;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-
 import objects.Light;
-import objects.Plane;
-import objects.Sphere;
 import tools.Color;
 import tools.Vec3d;
 
@@ -20,8 +16,9 @@ import tools.Vec3d;
  */
 public class Scene {
     
-    public static final Color AMBIENT_LIGHT = Color.BLACK;
     
+    public static final Color AMBIENT_LIGHT = Color.BLACK;
+    public int sceneNumber = 0;
     public ArrayList<Intersection> objects = new ArrayList<>();
     public ArrayList<Light> lights = new ArrayList<>();
     
@@ -51,49 +48,47 @@ public class Scene {
             }
         }
 
-        if (objectI == null) return AMBIENT_LIGHT;
+        if (objectI == null)
+            return AMBIENT_LIGHT;
+        
+        
 
         // I = P + lambda . v
         Vec3d I = P.add(v.scale(lambdaI)); 
         Vec3d nI = objectI.getNormal(I);
 
-        boolean inside = nI.dotProduct(v) > 0.0D;
-        if (inside) nI.setScale(-1.0D);
         
-        color = objectI.color.multiply(AMBIENT_LIGHT);
+        boolean inside = nI.dotProduct(v) > 0.0D;
+        if (inside)
+            nI = nI.scale(-1.0D);
+        
+        
+        color = objectI.color; //.multiply(AMBIENT_LIGHT);
 
         for (Light light : this.lights) {
-
             Vec3d IS = light.position.sub(I); // IS = S - I
+
             boolean visible = true;
 
             for (Intersection object : this.objects) {
                 double lambdaObj = object.getIntersection(I, IS);
-                if (lambdaObj > 0.0D && lambdaObj < 1.0D) visible = false;
+
+                if (lambdaObj > 0D && lambdaObj < 1D)
+                    visible = false;
             }
 
             if (visible) {
-
+                //nI.setNormalize(); // nI / ||nI||
                 IS.setNormalize(); // IS / ||IS||
                 Vec3d normalizedV = v.normalize(); // v / ||v||
 
-                double weight = Math.max(nI.dotProduct(IS), 0.0D); // weight = max(nI . IS, 0)
+                double weight = Math.max(nI.dotProduct(IS), 0D); // weight = max(nI . IS, 0)
 
-                Vec3d r = IS.sub(nI.scale(weight * 2.0D)); // r = IS - 2 * weight * nI
+                Vec3d r = IS.sub(nI.scale(weight * 2D)); // r = IS - 2 * weight * nI
                 double rDotV = Math.max(r.dotProduct(normalizedV), 0.0D); // rDotV = max(r . v, 0)
 
-                // light.diffuse * object.color * niDotIS
-                Color diffuse = light.diffuse
-                        .multiply(objectI.color)
-                        .scale(weight)
-                ;
-
-                // light.specular * object.specularColor * pow(rDotV, object.shininess)
-                Color specular = light.specular
-                        .multiply(objectI.specularColor)
-                        .scale(Math.pow(rDotV, objectI.shininess))
-                ;
-
+                Color diffuse = light.diffuse.multiply(objectI.color).scale(weight);// light.diffuse * object.color * niDotIS
+                Color specular = light.specular.multiply(objectI.specularColor).scale(Math.pow(rDotV, objectI.shininess)); // light.specular * object.specularColor * pow(rDotV, object.shininess)
                 color = color.add(diffuse).add(specular);
             }
         }
@@ -113,7 +108,9 @@ public class Scene {
             color = color.add(findColor(I, t, depth - 1).scale(objectI.transmission));
         }
 
+        //System.out.println(color);
         return color;
     }
+
     
 }
