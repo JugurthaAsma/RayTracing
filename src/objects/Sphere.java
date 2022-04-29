@@ -5,21 +5,21 @@
  */
 package objects;
 
-import raytracing.Intersection;
-import tools.Color;
-import tools.Vec3d;
+import utils.Intersectionable;
+import utils.Color;
+import utils.Vec3;
 
 /**
  *
- * @author JUGURTHA
+ * @author Hylia
  */
-public class Sphere extends Intersection {
+public class Sphere extends Intersectionable {
     
-    public final Vec3d center;
+    public final Vec3 center;
     public final double radius;
 
     public Sphere(
-            Vec3d center,           // Sphere's center
+            Vec3 center,           // Sphere's center
             double radius,          // Sphere's radius
             Color color,            // Sphere's color
             Color specularColor,    // Sphere's specular color
@@ -41,7 +41,7 @@ public class Sphere extends Intersection {
     }
     
     @Override
-    public double getIntersection(Vec3d p, Vec3d v) {
+    public double getIntersection(Vec3 p, Vec3 v) {
         
         /*
          * L’équation peut être simplifiée en reconnaissant les produits scalaires, ce qui donne :
@@ -64,22 +64,22 @@ public class Sphere extends Intersection {
          * Il faut calculer la normale en I, Cette normale est CI / ||CI|| (rayon correspondant à I, qu’on normalise pour trouver un vecteur normal).
          */
 
-        Vec3d CP = p.sub(center);
+        Vec3 CP = p.sub(center);
         double a = v.dotProduct(v);
-        double b = v.scale(2.0D).dotProduct(CP);
+        double b = v.scale(2D).dotProduct(CP);
         double c = CP.dotProduct(CP) - radius * radius;
-        double delta = b * b - 4.0D * a * c;
+        double delta = b * b - 4D * a * c;
 
-        if (delta == 0.0D) {
-            double lambda = -b / (2.0D * a);
+        if (delta == 0D) {
+            double lambda = -b / (2D * a);
 
             if (lambda > 0.0001D)
                 return lambda;
         }
         
-        if (delta > 0.0D) {
-            double lambda1 = (-b - Math.sqrt(delta)) / (2.0D * a);
-            double lambda2 = (-b + Math.sqrt(delta)) / (2.0D * a);
+        if (delta > 0D) {
+            double lambda1 = (-b - Math.sqrt(delta)) / (2D * a);
+            double lambda2 = (-b + Math.sqrt(delta)) / (2D * a);
 
             if (lambda1 < 0.0001D && lambda2 > 0.0001D) {
                 return lambda2;
@@ -88,11 +88,11 @@ public class Sphere extends Intersection {
             }
         }
         
-        return -1.0D;
+        return -1D;
     }
 
     @Override
-    public Vec3d getNormal(Vec3d v) {
+    public Vec3 getNormal(Vec3 v) {
         return v.sub(center).normalize();
     }
     

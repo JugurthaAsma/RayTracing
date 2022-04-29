@@ -5,23 +5,23 @@
  */
 package objects;
 
-import raytracing.Intersection;
-import tools.Color;
-import tools.Vec3d;
+import utils.Intersectionable;
+import utils.Color;
+import utils.Vec3;
 
 
 
 /**
  *
- * @author JUGURTHA
+ * @author Hylia
  */
-public class Plane extends Intersection {
+public class Plane extends Intersectionable {
     
-    Vec3d normal;
+    Vec3 normal;
     double dist;
     
     public Plane(
-            Vec3d normal,           // plane's normal
+            Vec3 normal,           // plane's normal
             double distance,        // distance of the plane from origin
             Color color,            // plane's color
             Color specularColor,    // plane's specular color
@@ -43,7 +43,7 @@ public class Plane extends Intersection {
     }
 
     @Override
-    public double getIntersection(Vec3d p, Vec3d v) {
+    public double getIntersection(Vec3 p, Vec3 v) {
         
         /**
          * Algo final :
@@ -58,18 +58,18 @@ public class Plane extends Intersection {
         
         double n_v = normal.dotProduct(v);
 
-        if (n_v != 0.0D) {
+        if (n_v != 0D) {
             double lambdaI = (-(normal.dotProduct(p)) - dist) / n_v;
 
             if (lambdaI > 0.0001D)
                 return lambdaI;
         }
 
-        return -1.0D;
+        return -1D;
     }
 
     @Override
-    public Vec3d getNormal(Vec3d v) {
+    public Vec3 getNormal(Vec3 v) {
         return normal;
     }
     
