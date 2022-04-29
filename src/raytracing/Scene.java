@@ -22,14 +22,6 @@ public class Scene {
     public ArrayList<Intersection> objects = new ArrayList<>();
     public ArrayList<Light> lights = new ArrayList<>();
     
-    /**
-    * Main method of the raytracer to find the color of a pixel.
-    * 
-    * @param P     the position of the ray
-    * @param v     the direction of the ray
-    * @param depth the depth of the recursion
-    * @return the color of the pixel
-    */
     public Color findColor(Vec3d P, Vec3d v, int depth) {
         Color color = AMBIENT_LIGHT;
         
