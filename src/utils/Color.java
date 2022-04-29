@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package utils;
 
 /**
@@ -23,9 +18,9 @@ public class Color {
     public static final Color CYAN = new Color(0F, 255F, 255F);
     
     
-    public final float blue;
-    public final float green;
-    public final float red;
+    private final float blue;
+    private final float green;
+    private final float red;
 
     public Color(float b, float g, float r) {
         this.blue = Math.min(b, 255F);
@@ -56,4 +51,18 @@ public class Color {
             Math.min((float)Math.floor(this.red *   s), 255F)
         );
     }
+
+    public float getBlue() {
+        return blue;
+    }
+
+    public float getGreen() {
+        return green;
+    }
+
+    public float getRed() {
+        return red;
+    }
+    
+    
 }

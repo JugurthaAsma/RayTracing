@@ -1,12 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package utils;
-
-import utils.Color;
-import utils.Vec3;
 
 /**
  *
@@ -14,17 +6,28 @@ import utils.Vec3;
  */
 public class Light {
     
-    public final Vec3 position;
-    public final Color diffuse, specular;
+    public static final Color AMBIENT_LIGHT = Color.BLACK;
+    private final Vec3 position;
+    private final Color diffuse, specular;
     
-    public Light(
-            Vec3 position,
-            Color diffuse,
-            Color specular
-    ) {
+    public Light(Vec3 position,Color diffuse,Color specular) {
         this.position = position;
         this.diffuse = diffuse;
         this.specular = specular;
     }
+
+    public Vec3 getPosition() {
+        return position;
+    }
+
+    public Color getDiffuse() {
+        return diffuse;
+    }
+
+    public Color getSpecular() {
+        return specular;
+    }
+    
+    
     
 }

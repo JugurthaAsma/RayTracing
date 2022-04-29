@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package objects;
 
 import utils.Intersectionable;
@@ -44,18 +39,6 @@ public class Plane extends Intersectionable {
 
     @Override
     public double getIntersection(Vec3 p, Vec3 v) {
-        
-        /**
-         * Algo final :
-         * 
-         *  On vérifie que n.u != 0
-         *  On calcule
-         *  λI = (−n.P−d) / (n.u)
-         *  On vérifie que λI>0
-         *  Puis on en déduit l’intersection I=M(λI) à partir de λI et de l’équation du rayon.
-         *  La normale de l’intersection est n (car tout point du plan a cette normale)
-         */
-        
         double n_v = normal.dotProduct(v);
 
         if (n_v != 0D) {
