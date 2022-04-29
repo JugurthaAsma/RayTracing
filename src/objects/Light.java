@@ -17,7 +17,11 @@ public class Light {
     public final Vec3d position;
     public final Color diffuse, specular;
     
-    public Light(Vec3d position, Color diffuse, Color specular) {
+    public Light(
+            Vec3d position,
+            Color diffuse,
+            Color specular
+    ) {
         this.position = position;
         this.diffuse = diffuse;
         this.specular = specular;

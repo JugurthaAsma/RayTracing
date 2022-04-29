@@ -19,15 +19,18 @@ public class Color {
     static public final Color BLUE = new Color(255.0F, 0.0F, 0.0F);
     static public final Color GREEN = new Color(0.0F, 255.0F, 0.0F);
     static public final Color RED = new Color(0.0F, 0.0F, 255.0F);
+    public static final Color YELLOW = new Color(255.0F, 255.0F, 0.0F);
+    public static final Color CYAN = new Color(0.0F, 255.0F, 255.0F);
+    
     
     public final float b;
     public final float g;
     public final float r;
 
     public Color(float b, float g, float r) {
-        this.b = (b < 0F) ? 0F : Math.min(b, 255F);
-        this.g = (g < 0F) ? 0F : Math.min(g, 255F);
-        this.r = (r < 0F) ? 0F : Math.min(r, 255F);
+        this.b = Math.max(Math.min(b, 255.0F), 0.0F);
+        this.g = Math.max(Math.min(g, 255.0F), 0.0F);
+        this.r = Math.max(Math.min(r, 255.0F), 0.0F);
     }
 
     public Color add(Color color) {

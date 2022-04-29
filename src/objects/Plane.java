@@ -20,21 +20,24 @@ public class Plane extends Intersection {
     Vec3d normal;
     double dist;
     
-    /**
-     * Constructor.
-     * 
-     * @param normal            the normal of the plane
-     * @param distance          the distance from the origin of the plane to the
-     *                          plane
-     * @param color             the color of the plane
-     * @param specularColor     the specular color of the plane
-     * @param shininess         the shininess of the plane
-     * @param reflectionCoeff   the reflection coefficient of the plane
-     * @param transmissionCoeff the transmission coefficient of the plane
-     * @param refractionIndex   the refraction index of the plane
-     */
-    public Plane(Vec3d normal, double distance, Color color, Color specularColor, double shininess, double reflectionCoeff, double transmissionCoeff, double refractionIndex) {
-        super(color, specularColor, shininess, reflectionCoeff, transmissionCoeff, refractionIndex);
+    public Plane(
+            Vec3d normal,           // plane's normal
+            double distance,        // distance of the plane from origin
+            Color color,            // plane's color
+            Color specularColor,    // plane's specular color
+            double shininess,       // plane's shininess
+            double reflection,      // plane's reflection coeffition
+            double transmission,    // plane's transmission coeffition
+            double refraction       // plane's refraction index
+    ) {
+        super(
+                color,
+                specularColor,
+                shininess,
+                reflection,
+                transmission,
+                refraction
+        );
         this.normal = normal;
         this.dist = distance;
     }
@@ -52,7 +55,7 @@ public class Plane extends Intersection {
          *  Puis on en déduit l’intersection I=M(λI) à partir de λI et de l’équation du rayon.
          *  La normale de l’intersection est n (car tout point du plan a cette normale)
          */
-        /*
+        
         double n_v = normal.dotProduct(v);
 
         if (n_v != 0.0D) {
@@ -63,15 +66,10 @@ public class Plane extends Intersection {
         }
 
         return -1.0D;
-*/
-        
-        final double t = (normal.dotProduct(v) != 0.0D) ? (-(normal.dotProduct(p)) - dist) / (normal.dotProduct(v)) : -1.0D;
-        return (t > 0.0001D) ? t : -1.0D;
-    
     }
 
     @Override
-    public Vec3d getNormal(Vec3d I) {
+    public Vec3d getNormal(Vec3d v) {
         return normal;
     }
     

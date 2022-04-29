@@ -17,19 +17,31 @@ public class Sphere extends Intersection {
     
     public final Vec3d center;
     public final double radius;
-    
-    public Sphere(Vec3d center, double radius, Color color) {
-        this(center, radius, color, Color.WHITE, 10.0D, 0.02D, 0.5D, 1D);
-    }
-    
-    public Sphere(Vec3d center, double radius, Color color, Color specularColor, double shininess, double reflection, double transmission, double refraction) {
-        super(color, specularColor, shininess, reflection, transmission, refraction);
+
+    public Sphere(
+            Vec3d center,           // Sphere's center
+            double radius,          // Sphere's radius
+            Color color,            // Sphere's color
+            Color specularColor,    // Sphere's specular color
+            double shininess,       // Sphere's shininess
+            double reflection,      // Sphere's reflection
+            double transmission,    // Sphere's transmission
+            double refraction       // Sphere's refraction
+    ) {
+        super(
+                color,
+                specularColor,
+                shininess,
+                reflection,
+                transmission,
+                refraction
+        );
         this.center = center;
         this.radius = radius;
     }
     
     @Override
-    public double getIntersection(Vec3d P, Vec3d v) {
+    public double getIntersection(Vec3d p, Vec3d v) {
         
         /*
          * L’équation peut être simplifiée en reconnaissant les produits scalaires, ce qui donne :
@@ -44,7 +56,7 @@ public class Sphere extends Intersection {
          *      Comme a>0 (c’est une norme au carré), alors on peut déduire que λ2>λ1 (pour le premier
          * on retire une quantité positive -b-sqrt(), pour la seconde on l’ajoute -b+sqrt()).
          *      Tout dépend alors de la position relative des solutions par rapport à 0
-         *      Si 0>=λ2>λ1, L’intersection avec la sphère est sur la droite support, mais « derrière » le rayon, donc pas d’intersection avec le rayon
+         *      Si 0>λ2>λ1, L’intersection avec la sphère est sur la droite support, mais « derrière » le rayon, donc pas d’intersection avec le rayon
          *      Si λ2>0>λ1, P est dans la sphère et donc, le rayon ressort de la sphère à l’intersection λI=λ
          *      Si λ2>λ1>0, alors l’intersection à prendre c’est λI=λ1 car c’est la première intersection.
          * 
@@ -52,7 +64,7 @@ public class Sphere extends Intersection {
          * Il faut calculer la normale en I, Cette normale est CI / ||CI|| (rayon correspondant à I, qu’on normalise pour trouver un vecteur normal).
          */
 
-        Vec3d CP = P.sub(center);
+        Vec3d CP = p.sub(center);
         double a = v.dotProduct(v);
         double b = v.scale(2.0D).dotProduct(CP);
         double c = CP.dotProduct(CP) - radius * radius;
@@ -69,9 +81,9 @@ public class Sphere extends Intersection {
             double lambda1 = (-b - Math.sqrt(delta)) / (2.0D * a);
             double lambda2 = (-b + Math.sqrt(delta)) / (2.0D * a);
 
-            if (lambda1 < 0.0001D && 0.001D < lambda2) {
+            if (lambda1 < 0.0001D && lambda2 > 0.0001D) {
                 return lambda2;
-            } else if (0.0001D < lambda1 && lambda1 < lambda2) {
+            } else if (lambda1 > 0.0001D && lambda1 < lambda2) {
                 return lambda1;
             }
         }
@@ -80,8 +92,8 @@ public class Sphere extends Intersection {
     }
 
     @Override
-    public Vec3d getNormal(Vec3d I) {
-        return I.sub(center).normalize();
+    public Vec3d getNormal(Vec3d v) {
+        return v.sub(center).normalize();
     }
     
 }

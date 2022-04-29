@@ -21,7 +21,14 @@ public abstract class Intersection {
     public final double transmission;
     public final double refraction;
     
-    public Intersection(Color color, Color specularColor, double shininess, double reflection, double transmission, double refraction) {
+    public Intersection(
+            Color color,
+            Color specularColor,
+            double shininess,
+            double reflection,
+            double transmission,
+            double refraction
+    ) {
         this.color = color;
         this.specularColor = specularColor;
         this.shininess = shininess;
@@ -30,8 +37,8 @@ public abstract class Intersection {
         this.refraction = refraction;
     }
     
-    public abstract double getIntersection(Vec3d P, Vec3d v);    
+    public abstract double getIntersection(Vec3d p, Vec3d v);    
 
-    public abstract Vec3d getNormal(Vec3d I);
+    public abstract Vec3d getNormal(Vec3d v);
 
 }

@@ -17,7 +17,7 @@ public class Vec3d
      */
     public Vec3d()
     {
-        this.x=this.y=this.z=0D;
+        this.x=this.y=this.z=0.0D;
     }
 
     /**
@@ -64,7 +64,7 @@ public class Vec3d
     public void setNormalize()
     {
         double l=this.lengthSquare();
-        if (l > 0D) {
+        if (l > 0.0D) {
             double length = Math.sqrt(l);
             this.x /= length;
             this.y /= length;

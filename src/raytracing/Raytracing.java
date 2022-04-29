@@ -74,35 +74,42 @@ public class Raytracing {
         byte[] buffer = new byte[3 * width * height];
         Vec3d p = new Vec3d();
 
-        SceneBuilder sb = new SceneBuilder();
-        //sb.buildScene1();
-        sb.buildScene2();
-        //sb.buildScene3();
+        Runnable myRunnable =  () -> {
+            for (int i = 1; i <=3; ++ i) {
+                SceneBuilder sb = new SceneBuilder();
+                //System.out.println("Building scene " + i);
+                sb.buildScene(i);
 
-        for (int row = 0; row < height; row++) { // for each row of the image
-            for (int col = 0; col < width; col++) { // for each column of the image
-                
-                int index = 3 * ((row * width) + col); // compute index of color for pixel (x,y) in the buffer
-                
-                double x = (col - width / 2.0D) / minResolution;
-                double y = (row - height / 2.0D) / minResolution;
-                double z = -1.25D;
-                Vec3d v = new Vec3d(x, y, z);
-               
-                Color color = sb.scene.findColor(p, v, Config.DEPTH);
-                
-                // Depending on the x position, select a color... 
-                buffer[index] = (byte) color.b;
-                buffer[index + 1] = (byte) color.g;
-                buffer[index + 2] = (byte) color.r;
+                for (int row = 0; row < height; row++) { // for each row of the image
+                    for (int col = 0; col < width; col++) { // for each column of the image
+
+                        int index = 3 * ((row * width) + col); // compute index of color for pixel (x,y) in the buffer
+
+                        double x = (col - width / 2.0D) / minResolution;
+                        double y = (row - height / 2.0D) / minResolution;
+                        double z = Config.DISTANCE;
+                        Vec3d v = new Vec3d(x, y, z);
+
+                        Color color = sb.scene.findColor(p, v, Config.DEPTH);
+
+                        // Depending on the x position, select a color... 
+                        buffer[index] = (byte) color.b;
+                        buffer[index + 1] = (byte) color.g;
+                        buffer[index + 2] = (byte) color.r;
+
+                    }
+                }
+
+                try {
+                    saveTGA("Scene_" + sb.scene.sceneNumber + "_" + width +"x" + height + ".tga", buffer, width, height);
+                }
+                catch(Exception e) {
+                    System.err.println("TGA file not created :" + e);
+                }
             }
-        }
-
-        try {
-            saveTGA("Scene_" + sb.scene.sceneNumber + "_" + width +"x" + height + ".tga", buffer, width, height);
-        }
-        catch(Exception e) {
-            System.err.println("TGA file not created :" + e);
-        }
+        };
+        
+        Thread thread = new Thread(myRunnable);
+        thread.start();
     }
 }
