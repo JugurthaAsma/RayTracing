@@ -9,6 +9,7 @@ public abstract class Intersectionable {
     private final Color color;
     private final Color specularColor;
     private final double shininess;
+    
     private final double reflection;
     private final double transmission;
     private final double refraction;

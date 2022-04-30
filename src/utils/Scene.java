@@ -33,85 +33,71 @@ public class Scene {
 
     }
 
-    public Color findColor(Vec3 p, Vec3 v, int depth) {
+    public Color findColor(Vec3 p, Vec3 v, int maxDepth) {
         Color color = Light.AMBIENT_LIGHT;
         
-        if (depth == 0)
+        if (maxDepth == 0)
             return color;
 
         double lambdaI = Double.MAX_VALUE;
-        Intersectionable objectI = null;
+        Intersectionable nearest = null;
 
-        for (Intersectionable object : this.objects) {
-            double lambdaObj = object.getIntersection(p, v);
+        for (Intersectionable obj : this.objects) {
+            double lambda = obj.getIntersection(p, v);
 
-            if (lambdaObj > 0D && lambdaObj < lambdaI) {
-                lambdaI = lambdaObj;
-                objectI = object;
+            if (lambda > 0D && lambda < lambdaI) {
+                lambdaI = lambda;
+                nearest = obj;
             }
         }
 
-        if (objectI == null)
+        if (nearest == null)
             return color;
 
-        // I = P + lambda . v
+        // I = P + lambdaI . v
         Vec3 I = p.add(v.scale(lambdaI)); 
-        Vec3 nI = objectI.getNormal(I);
+        Vec3 nI = nearest.getNormal(I);
 
         boolean inside = nI.dotProduct(v) > 0D;
         if (inside) nI.setScale(-1D);
         
-        color = objectI.getColor().multiply(color);
+        color = nearest.getColor().multiply(color);
 
         for (Light light : this.lights) {
 
-            Vec3 IS = light.getPosition().sub(I); // IS = S - I
+            Vec3 IS = light.getPosition().sub(I);
             boolean visible = true;
 
-            for (Intersectionable object : this.objects) {
-                double lambdaObj = object.getIntersection(I, IS);
-                if (lambdaObj > 0D && lambdaObj < 1D) visible = false;
+            for (Intersectionable obj : this.objects) {
+                double lambda = obj.getIntersection(I, IS);
+                if (lambda > 0D && lambda < 1D) visible = false;
             }
 
             if (visible) {
 
-                IS.setNormalize(); // IS / ||IS||
-                Vec3 normalizedV = v.normalize(); // v / ||v||
-
-                double weight = Math.max(nI.dotProduct(IS), 0D); // weight = max(nI . IS, 0)
-
-                Vec3 r = IS.sub(nI.scale(weight * 2D)); // r = IS - 2 * weight * nI
-                double rDotV = Math.max(r.dotProduct(normalizedV), 0D); // rDotV = max(r . v, 0)
-
-                // light.diffuse * object.color * niDotIS
-                Color diffuse = light.getDiffuse()
-                        .multiply(objectI.getColor())
-                        .scale(weight)
-                ;
-
-                // light.specular * object.specularColor * pow(rDotV, object.shininess)
-                Color specular = light.getSpecular()
-                        .multiply(objectI.getSpecularColor())
-                        .scale(Math.pow(rDotV, objectI.getShininess()))
-                ;
+                IS.setNormalize();
+                Vec3 normalizedV = v.normalize();
+                double weight = Math.max(nI.dotProduct(IS), 0D);
+                Vec3 r = IS.sub(nI.scale(weight * 2D));
+                double rDotV = Math.max(r.dotProduct(normalizedV), 0D);
+                Color diffuse = light.getDiffuse().multiply(nearest.getColor()).scale(weight);
+                Color specular = light.getSpecular().multiply(nearest.getSpecularColor()).scale(Math.pow(rDotV, nearest.getShininess()));
 
                 color = color.add(diffuse).add(specular);
             }
         }
 
-        if (objectI.getReflection() > 0D) {
-            Vec3 r = v.sub(nI.scale(2D * nI.dotProduct(v))); // r = v - 2 * nIDotV * nI
-            r.normalize(); // r / ||r||
-            color = color.add(findColor(I, r, depth - 1).scale(objectI.getReflection()));
+        if (nearest.getReflection() > 0D) {
+            Vec3 reflectionRay = v.sub(nI.scale(2D * nI.dotProduct(v))).normalize();
+            color = color.add(findColor(I, reflectionRay, maxDepth - 1).scale(nearest.getReflection()));
         }
 
-        if (objectI.getTransmission() > 0D) {
-            double eta = inside ? objectI.getRefraction() : 1D / objectI.getRefraction();
-            double c1 = -nI.dotProduct(v); // c1 = nI . v
-            double c2 = Math.sqrt(1D - eta * eta * (1D - c1 * c1)); // c2 = sqrt(1 - eta^2 * (1 - c1^2))
-            Vec3 t = v.scale(eta).add(nI.scale(eta * c1 - c2)); // t = eta * v + (eta * c1 - c2) * nI
-            t.normalize(); // t / ||t||
-            color = color.add(findColor(I, t, depth - 1).scale(objectI.getTransmission()));
+        if (nearest.getTransmission() > 0D) {
+            double t = inside ? nearest.getRefraction() : 1D / nearest.getRefraction();
+            double c1 = -nI.dotProduct(v);
+            double c2 = Math.sqrt(1D - t * t * (1D - c1 * c1));
+            Vec3 transmissionRay = v.scale(t).add(nI.scale(t * c1 - c2)).normalize();
+            color = color.add(findColor(I, transmissionRay, maxDepth - 1).scale(nearest.getTransmission()));
         }
 
         return color;
