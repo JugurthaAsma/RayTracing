@@ -14,7 +14,7 @@ public class Config {
     // default values
     public static int WIDTH = 1920;
     public static int HEIGHT = 1080;
-    public static double DISTANCE = -1D;
+    public static double DISTANCE = 1.0D;
     public static int DEPTH = 3;
     
     public static void setConfig(String[] args) {

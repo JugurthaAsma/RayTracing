@@ -11,16 +11,17 @@ package tools;
  */
 public class Color {
     
+    // BGR
     static public final Color BLACK = new Color(0.0F, 0.0F, 0.0F);
     static public final Color GREY = new Color(50.0F, 50.0F, 50.0F);
-    public static final Color DARK_GRAY = new Color(30F, 30F, 30F);
+    public static final Color DARKGREY = new Color(30F, 30F, 30F);
     static public final Color LIGHTGREY = new Color(80.0F, 80.0F, 80.0F);
     static public final Color WHITE = new Color(255.0F, 255.0F, 255.0F);
     static public final Color BLUE = new Color(255.0F, 0.0F, 0.0F);
     static public final Color GREEN = new Color(0.0F, 255.0F, 0.0F);
     static public final Color RED = new Color(0.0F, 0.0F, 255.0F);
-    public static final Color YELLOW = new Color(255.0F, 255.0F, 0.0F);
-    public static final Color CYAN = new Color(0.0F, 255.0F, 255.0F);
+    public static final Color CYAN = new Color(255.0F, 255.0F, 0.0F);
+    public static final Color YELLOW = new Color(0.0F, 255.0F, 255.0F);
     
     
     public final float b;

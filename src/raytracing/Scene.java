@@ -17,12 +17,41 @@ import tools.Vec3d;
  */
 public class Scene {
     
-    public static final Color AMBIENT_LIGHT = Color.BLACK;
+    public static Color AMBIENT_LIGHT = Color.DARKGREY;
     public int sceneNumber = 0;
     public ArrayList<Intersection> objects = new ArrayList<>();
     public ArrayList<Light> lights = new ArrayList<>();
     
-    public Color findColor(Vec3d P, Vec3d v, int depth) {
+    public Color findColor(Ray ray, int depth) {
+
+        /**
+         *  pour tous les objets obj de la scène faire
+         *      Calculer λobj l’intersection (si elle existe) du rayon (start,u) avec l’objet obj
+         *  fpour
+         * 
+         *  λI=min{λobj}, correspondant à l’objet objI
+         *  Caculer I correspondant à λI, et nI la normale en I pour objI
+         *  // Calcul de l’éclairement
+         *  Color col=objI.color*Lambient
+         *  Pour chaque source S faire
+         *      viss=true
+         *      Pour chaque objet obj de la scene faire // Mieux : Boucle while...
+         *          Calculer λobj l’intersection (si elle existe) du rayon (I, IS) avec l’objet obj
+         *          Si 1>λobj>0, alors viss=false fsi // source pas visible
+         *      fpour
+         * 
+         *      si viss alors
+         *          col + = contributions diffuse et spéculaire de la source S
+         *      fsi
+         *  fpour
+         *  // Calculer la direction réfléchie r avec u et nI
+         *  Col+=objI.kr * getRayColor(I,r)
+         *  // Calculer la direction transmise t avec u, nI et les indices de réfraction
+         *  col+=objI.kt * getRayColor(I,t)
+         *  return col;
+         */
+
+
         Color color = AMBIENT_LIGHT;
         
         if (depth == 0)
@@ -32,7 +61,7 @@ public class Scene {
         Intersection objectI = null;
 
         for (Intersection object : this.objects) {
-            double lambdaObj = object.getIntersection(P, v);
+            double lambdaObj = object.getIntersection(ray.p, ray.v);
 
             if (lambdaObj > 0.0D && lambdaObj < lambdaI) {
                 lambdaI = lambdaObj;
@@ -42,64 +71,75 @@ public class Scene {
 
         if (objectI == null) return AMBIENT_LIGHT;
 
-        // I = P + lambda . v
-        Vec3d I = P.add(v.scale(lambdaI)); 
+        Vec3d I = ray.p.add(ray.v.scale(lambdaI)); 
         Vec3d nI = objectI.getNormal(I);
 
-        boolean inside = nI.dotProduct(v) > 0.0D;
+        boolean inside = nI.dotProduct(ray.v) > 0.0D;
         if (inside) nI.setScale(-1.0D);
         
         color = objectI.color.multiply(AMBIENT_LIGHT);
 
         for (Light light : this.lights) {
 
-            Vec3d IS = light.position.sub(I); // IS = S - I
-            boolean visible = true;
+            Vec3d IS = light.position.sub(I);
+            boolean viss = true;
 
             for (Intersection object : this.objects) {
                 double lambdaObj = object.getIntersection(I, IS);
-                if (lambdaObj > 0.0D && lambdaObj < 1.0D) visible = false;
+                if (lambdaObj > 0.0D && lambdaObj < 1.0D) {
+                    viss = false;
+                    break;
+                }
             }
 
-            if (visible) {
+            if (viss) {
 
-                IS.setNormalize(); // IS / ||IS||
-                Vec3d normalizedV = v.normalize(); // v / ||v||
+                IS.setNormalize();
+                double weight = Math.max(0.0D, nI.dotProduct(IS));
 
-                double weight = Math.max(nI.dotProduct(IS), 0.0D); // weight = max(nI . IS, 0)
+                double r_v = Math.max(0.0D,
+                    IS
+                    .sub(nI.scale(weight * 2.0D))
+                    .dotProduct(ray.v.normalize())
+                );
 
-                Vec3d r = IS.sub(nI.scale(weight * 2.0D)); // r = IS - 2 * weight * nI
-                double rDotV = Math.max(r.dotProduct(normalizedV), 0.0D); // rDotV = max(r . v, 0)
-
-                // light.diffuse * object.color * niDotIS
                 Color diffuse = light.diffuse
-                        .multiply(objectI.color)
-                        .scale(weight)
+                    .multiply(objectI.color)
+                    .scale(weight)
                 ;
 
-                // light.specular * object.specularColor * pow(rDotV, object.shininess)
                 Color specular = light.specular
-                        .multiply(objectI.specularColor)
-                        .scale(Math.pow(rDotV, objectI.shininess))
+                    .multiply(objectI.specularColor)
+                    .scale(Math.pow(r_v, objectI.shininess))
                 ;
 
-                color = color.add(diffuse).add(specular);
+                color = color
+                    .add(diffuse)
+                    .add(specular)
+                ;
             }
         }
 
         if (objectI.reflection > 0.0D) {
-            Vec3d r = v.sub(nI.scale(2.0D * nI.dotProduct(v))); // r = v - 2 * nIDotV * nI
-            r.normalize(); // r / ||r||
-            color = color.add(findColor(I, r, depth - 1).scale(objectI.reflection));
+            Vec3d reflectDir = ray.v.sub(nI.scale(2.0D * nI.dotProduct(ray.v))).normalize();
+            color = color.add(findColor(new Ray(I, reflectDir), depth - 1).scale(objectI.reflection));
         }
 
         if (objectI.transmission > 0.0D) {
             double eta = inside ? objectI.refraction : 1.0D / objectI.refraction;
-            double c1 = -nI.dotProduct(v); // c1 = nI . v
-            double c2 = Math.sqrt(1.0D - eta * eta * (1.0D - c1 * c1)); // c2 = sqrt(1 - eta^2 * (1 - c1^2))
-            Vec3d t = v.scale(eta).add(nI.scale(eta * c1 - c2)); // t = eta * v + (eta * c1 - c2) * nI
-            t.normalize(); // t / ||t||
-            color = color.add(findColor(I, t, depth - 1).scale(objectI.transmission));
+            double nI_v = -nI.dotProduct(ray.v);
+            double k = 1.0D - eta * eta * (1.0D - nI_v * nI_v);
+
+            Vec3d transmiseDir = ray.v
+                .scale(eta)
+                .add(nI.scale(eta * nI_v - Math.sqrt(k)))
+                .normalize()
+            ;
+            
+            color = color
+                .add(findColor(new Ray(I, transmiseDir), depth - 1)
+                .scale(objectI.transmission))
+            ;
         }
 
         return color;

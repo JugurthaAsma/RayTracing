@@ -69,11 +69,12 @@ public class Raytracing {
         
         final int width = Config.WIDTH;
         final int height = Config.HEIGHT;
-        
-        final int minResolution = Math.min(width, height);
+        final int minResolution = Math.min(width, height); // in case of strange ratio
+
         byte[] buffer = new byte[3 * width * height];
         Vec3d p = new Vec3d();
 
+        // one thread per scene
         Runnable myRunnable =  () -> {
             for (int i = 1; i <=3; ++ i) {
                 SceneBuilder sb = new SceneBuilder();
@@ -87,10 +88,10 @@ public class Raytracing {
 
                         double x = (col - width / 2.0D) / minResolution;
                         double y = (row - height / 2.0D) / minResolution;
-                        double z = Config.DISTANCE;
+                        double z = -Config.DISTANCE;
                         Vec3d v = new Vec3d(x, y, z);
 
-                        Color color = sb.scene.findColor(p, v, Config.DEPTH);
+                        Color color = sb.scene.findColor(new Ray(p, v), Config.DEPTH);
 
                         // Depending on the x position, select a color... 
                         buffer[index] = (byte) color.b;
@@ -101,7 +102,7 @@ public class Raytracing {
                 }
 
                 try {
-                    saveTGA("Scene_" + sb.scene.sceneNumber + "_" + width +"x" + height + ".tga", buffer, width, height);
+                    saveTGA("images/Scene_" + sb.scene.sceneNumber + "_" + width +"x" + height + ".tga", buffer, width, height);
                 }
                 catch(Exception e) {
                     System.err.println("TGA file not created :" + e);

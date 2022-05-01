@@ -26,5 +26,11 @@ public class Light {
         this.diffuse = diffuse;
         this.specular = specular;
     }
+
+    public Light(
+            Vec3d position
+    ) {
+        this(position, Color.WHITE, Color.LIGHTGREY);
+    }
     
 }
