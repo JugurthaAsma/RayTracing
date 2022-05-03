@@ -9,7 +9,7 @@ FILES = \
 	src/tools/*.java 
 TARGET = build/
 
-DEFAULT_RESOLUTION = 1920 1080
+DEFAULT_RESOLUTION = 1080 720
 DEFAULT_DISTANCE = 1.0
 DEFAULT_DEPTH = 3
 DEFAULT_ARGS = $(DEFAULT_RESOLUTION) $(DEFAULT_DISTANCE) $(DEFAULT_DEPTH)
@@ -28,5 +28,5 @@ run: build
 
 clean:
 	rm -rf $(TARGET)
-	rm images/*
+	rm images/*.tga
 	

@@ -12,8 +12,8 @@ package tools;
 public class Config {
     
     // default values
-    public static int WIDTH = 1920;
-    public static int HEIGHT = 1080;
+    public static int WIDTH = 1080;
+    public static int HEIGHT = 720;
     public static double DISTANCE = 1.0D;
     public static int DEPTH = 3;
     
